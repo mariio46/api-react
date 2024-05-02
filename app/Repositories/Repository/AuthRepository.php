@@ -45,7 +45,7 @@ class AuthRepository implements AuthRepositoryInterface
 
         $requested_user->tokens()->delete();
 
-        $token = $requested_user->createToken(name: 'auth-api-token', expiresAt: now()->addDay());
+        $token = $requested_user->createToken(name: "login-api-token-{$requested_user->username}", expiresAt: now()->addDay());
 
         return [
             'user' => new AuthenticatedUserResource($requested_user),
