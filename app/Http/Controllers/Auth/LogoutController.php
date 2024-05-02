@@ -16,7 +16,7 @@ class LogoutController extends Controller
             $request->user()->tokens()->delete();
         } catch (Throwable $th) {
             return ApiResponse::serverError(
-                data: null
+                data: $th->getMessage() ?? null
             );
         }
 
