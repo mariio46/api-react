@@ -2,12 +2,17 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\User;
 
 interface AuthRepositoryInterface
 {
-    public function register(RegisterRequest $request): void;
+    public function register(array $data): void;
 
-    public function login(LoginRequest $request): string;
+    public function login(array $data): array;
+
+    public function updateAccount(array $data, User $user): void;
+
+    public function updatePassword(array $data, User $user): void;
+
+    public function deleteAccount(User $user): void;
 }

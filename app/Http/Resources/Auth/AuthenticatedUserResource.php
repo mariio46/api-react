@@ -12,7 +12,11 @@ class AuthenticatedUserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'username' => $this->username,
             'email' => $this->email,
+            'last_updated_account' => $this->getLastUpdatedAccount(),
+            'last_updated_password' => $this->getLastUpdatedPassword(),
+            'avatar' => $this->avatar(),
             'created_at' => $this->created_at->diffForHumans(),
             'updated_at' => $this->updated_at->diffForHumans(),
         ];

@@ -15,7 +15,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
+        'last_updated_password',
+        'last_updated_account',
     ];
 
     protected $hidden = [
@@ -23,11 +26,30 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function avatar(?int $size = 150): string
+    {
+        $hash = hash(algo: 'sha256', data: $this->email);
+
+        return "https://www.gravatar.com/avatar/{$hash}?s={$size}&d=mp";
+    }
+
+    public function getLastUpdatedAccount(): string
+    {
+        return $this->last_updated_account ? "Last updated account {$this->last_updated_account->diffForHumans()}." : 'Account not updated yet!';
+    }
+
+    public function getLastUpdatedPassword(): string
+    {
+        return $this->last_updated_password ? "Last updated password {$this->last_updated_password->diffForHumans()}." : 'Password not updated yet!';
+    }
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_updated_password' => 'datetime',
+            'last_updated_account' => 'datetime',
         ];
     }
 }

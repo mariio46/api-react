@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Resources\Auth\AuthenticatedUserResource;
 use App\Repositories\Interfaces\AuthRepositoryInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -16,25 +15,19 @@ class LoginController extends Controller
     public function __invoke(LoginRequest $request, AuthRepositoryInterface $authRepositoryInterface): JsonResponse
     {
         try {
-            $token = $authRepositoryInterface->login(request: $request);
+            $user = $authRepositoryInterface->login(data: $request->only(['email', 'password']));
         } catch (Exception $th) {
             if ($th instanceof ValidationException) {
                 throw $th;
-                // return ApiResponse::validationError(
-                //     data: $th->getMessage()
-                // );
             }
 
             return ApiResponse::serverError(
-                data: null
+                data: $th->getMessage() ?? null
             );
         }
 
         return ApiResponse::success(
-            data: [
-                'user' => new AuthenticatedUserResource($request->user()),
-                'token' => $token,
-            ],
+            data: $user,
             message: 'Login Success!'
         );
     }

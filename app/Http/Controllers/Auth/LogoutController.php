@@ -6,6 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Throwable;
 
 class LogoutController extends Controller
 {
@@ -13,7 +14,7 @@ class LogoutController extends Controller
     {
         try {
             $request->user()->tokens()->delete();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return ApiResponse::serverError(
                 data: null
             );

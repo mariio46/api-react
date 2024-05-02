@@ -14,7 +14,7 @@ class RegisterController extends Controller
     public function __invoke(RegisterRequest $request, AuthRepositoryInterface $authRepositoryInterface): JsonResponse
     {
         try {
-            $authRepositoryInterface->register(request: $request);
+            $authRepositoryInterface->register(data: $request->only(['name', 'email', 'password']));
         } catch (Exception $e) {
             return ApiResponse::serverError(
                 data: $e->getMessage() ?? null,
