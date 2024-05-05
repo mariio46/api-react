@@ -26,6 +26,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'username';
+    }
+
     public function avatar(?int $size = 150): string
     {
         $hash = hash(algo: 'sha256', data: $this->email);

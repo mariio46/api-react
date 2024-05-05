@@ -25,7 +25,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'username' => fn (array $attributes) => generateUsername($attributes['name']),
+            'username' => fn (array $attributes) => generateUsername(value: $attributes['name']),
             'email' => fn (array $attributes) => $attributes['username'] . '@gmail.com',
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

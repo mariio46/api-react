@@ -62,4 +62,18 @@ class ApiResponse
             status: Response::HTTP_INTERNAL_SERVER_ERROR
         );
     }
+
+    public static function notFound(mixed $data, ?string $message = 'Data Not Found', ?int $code = Response::HTTP_NOT_FOUND): JsonResponse
+    {
+        $body = [
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
+        ];
+
+        return response()->json(
+            data: $body,
+            status: Response::HTTP_NOT_FOUND
+        );
+    }
 }

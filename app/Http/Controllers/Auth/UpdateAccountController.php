@@ -15,7 +15,7 @@ class UpdateAccountController extends Controller
     public function __invoke(UpdateAccountRequest $request, AuthRepositoryInterface $authRepositoryInterface): JsonResponse
     {
         try {
-            $authRepositoryInterface->updateAccount(data: $request->only(['name', 'email']), user: $request->user());
+            $authRepositoryInterface->updateAccount(data: $request->only(['name', 'username', 'email']), user: $request->user());
         } catch (Throwable $th) {
             return ApiResponse::serverError(
                 data: $th->getMessage(),

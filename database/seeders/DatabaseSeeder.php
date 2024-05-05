@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Article;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -25,10 +24,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'fitra@gmail.com',
         ]);
 
-        User::factory(10)->create();
-
-        // Article::factory(2)->create();
-        Article::factory(90)->create();
-        // Article::factory(90 * 20)->create();
+        User::factory(98)->create();
     }
 }

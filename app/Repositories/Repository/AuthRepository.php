@@ -27,7 +27,7 @@ class AuthRepository implements AuthRepositoryInterface
             event(new Registered($user));
         } else {
             throw new Error(
-                message: 'Failed when creating user.',
+                message: 'Failed when registering user.',
                 code: 500,
             );
         }
@@ -60,13 +60,14 @@ class AuthRepository implements AuthRepositoryInterface
     {
         $user->fill([
             'name' => $data['name'],
+            'username' => $data['username'],
             'email' => $data['email'],
             'last_updated_account' => now(),
         ]);
 
         $user->saveOrFail();
 
-        if (! $user->wasChanged(['name', 'email', 'last_updated_account'])) {
+        if (! $user->wasChanged(['name', 'username', 'email', 'last_updated_account'])) {
             throw new Error(
                 message: 'Failed when updating account.',
                 code: 500,
