@@ -6,16 +6,11 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
-use App\Http\Resources\User\UserResource;
+use App\Http\Resources\User\UserIndexResource;
 use App\Http\Resources\User\UserShowResource;
-use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Throwable;
 
 class UserController extends Controller
 {
@@ -24,94 +19,51 @@ class UserController extends Controller
         //
     }
 
-    public function index(Request $request): JsonResponse|AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
-        try {
-            $users = $this->userRepositoryInterface->getAllUsers(current_user_id: $request->user()->id);
-        } catch (Throwable $th) {
-            // throw $th;
-            if ($th instanceof QueryException) {
-                return ApiResponse::serverError(
-                    data: 'QueryException ' . $th->getMessage(),
-                );
-            }
+        $users = $this->userRepositoryInterface->getAllUsers(current_user_id: $request->user()->id);
 
-            return ApiResponse::serverError(
-                data: null,
-            );
-        }
-
-        return UserResource::collection($users);
-    }
-
-    public function store(StoreUserRequest $request)
-    {
-        try {
-            $this->userRepositoryInterface->storeNewUser($request->only(['name', 'email', 'password']));
-        } catch (Throwable $th) {
-            return ApiResponse::serverError(
-                data: $th->getMessage() ?? null
-            );
-        }
-
-        return ApiResponse::created(
-            data: 'User has ben created successfully.'
+        return ApiResponse::success(
+            data: ['users' => UserIndexResource::collection($users)]
         );
     }
 
-    public function show(string $username)
+    public function store(StoreUserRequest $request): JsonResponse
     {
-        try {
-            $user = $this->userRepositoryInterface->getSingleUser(username: $username);
-        } catch (Throwable $th) {
-            if ($th instanceof NotFoundHttpException) {
-                return ApiResponse::notFound(
-                    data: "Cannot find User with Username: {$username}",
-                );
-            }
+        $user = $this->userRepositoryInterface->storeUser(data: $request->only(['name', 'email', 'password']));
 
-            return ApiResponse::serverError(
-                data: $th->getMessage() ?? null
-            );
-        }
+        return ApiResponse::created(
+            data: ['user' => new UserIndexResource($user)]
+        );
+    }
+
+    public function show(string $username): JsonResponse
+    {
+        $user = $this->userRepositoryInterface->getSingleUser(username: $username);
 
         return ApiResponse::success(
             data: ['user' => new UserShowResource($user)],
         );
     }
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, string $username): JsonResponse
     {
-        try {
-            $new_username = $this->userRepositoryInterface->updateUser(
-                data: $request->only(['name', 'username', 'email']),
-                user: $user,
-            );
-        } catch (Throwable $th) {
-            return ApiResponse::serverError(
-                data: $th->getMessage(),
-            );
-        }
+        $updatedUser = $this->userRepositoryInterface->updateUser(
+            data: $request->only(['name', 'username', 'email']),
+            username: $username,
+        );
 
         return ApiResponse::success(
-            data: ['new_username' => $new_username],
+            data: ['user' => new UserShowResource($updatedUser)],
         );
     }
 
-    public function destroy(User $user): JsonResponse
+    public function delete(string $username): JsonResponse
     {
-        $user->delete();
-
-        if ($user == false || $user == null) {
-            return ApiResponse::serverError(
-                data: null
-            );
-        } else {
-            $user->tokens()->delete();
-        }
+        $temporaryUserName = $this->userRepositoryInterface->deleteUser($username);
 
         return ApiResponse::success(
-            data: 'User has been deleted successfully.'
+            data: "User with name {$temporaryUserName} has been deleted successfully."
         );
     }
 }

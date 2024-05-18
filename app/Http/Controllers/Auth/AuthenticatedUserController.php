@@ -13,7 +13,7 @@ class AuthenticatedUserController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         return ApiResponse::success(
-            data: ['user' => new AuthenticatedUserResource($request->user())]
+            data: ['user' => new AuthenticatedUserResource($request->user()->load(['roles:id,name']))]
         );
     }
 }

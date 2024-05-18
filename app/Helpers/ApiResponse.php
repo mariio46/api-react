@@ -35,6 +35,34 @@ class ApiResponse
         );
     }
 
+    public static function accept(mixed $data, ?string $message = 'Accepted', ?int $code = Response::HTTP_ACCEPTED): JsonResponse
+    {
+        $body = [
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
+        ];
+
+        return response()->json(
+            data: $body,
+            status: Response::HTTP_ACCEPTED
+        );
+    }
+
+    public static function unauthorized(mixed $data, ?string $message = 'Unauthorized', ?int $code = Response::HTTP_UNAUTHORIZED): JsonResponse
+    {
+        $body = [
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
+        ];
+
+        return response()->json(
+            data: $body,
+            status: Response::HTTP_UNAUTHORIZED
+        );
+    }
+
     public static function validationError(mixed $data, ?string $message = 'Validation Failed!', ?int $code = Response::HTTP_UNPROCESSABLE_ENTITY): JsonResponse
     {
         $body = [
@@ -74,6 +102,20 @@ class ApiResponse
         return response()->json(
             data: $body,
             status: Response::HTTP_NOT_FOUND
+        );
+    }
+
+    public static function error(mixed $data, ?string $message = 'Bad Request', ?int $code = Response::HTTP_BAD_REQUEST): JsonResponse
+    {
+        $body = [
+            'code' => $code,
+            'message' => $message,
+            'data' => $data,
+        ];
+
+        return response()->json(
+            data: $body,
+            status: Response::HTTP_BAD_REQUEST
         );
     }
 }

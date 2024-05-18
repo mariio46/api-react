@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Repositories\Interfaces\AuthRepositoryInterface;
 use Error;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -25,6 +26,7 @@ class AuthRepository implements AuthRepositoryInterface
 
         if ($user->wasRecentlyCreated) {
             event(new Registered($user));
+            $user->assignRole('member');
         } else {
             throw new Error(
                 message: 'Failed when registering user.',
@@ -56,23 +58,16 @@ class AuthRepository implements AuthRepositoryInterface
         ];
     }
 
-    public function updateAccount(array $data, User $user): void
+    public function updateAccount(array $data, User $user): Model|static
     {
-        $user->fill([
+        $user->update([
             'name' => $data['name'],
             'username' => $data['username'],
             'email' => $data['email'],
             'last_updated_account' => now(),
         ]);
 
-        $user->saveOrFail();
-
-        if (! $user->wasChanged(['name', 'username', 'email', 'last_updated_account'])) {
-            throw new Error(
-                message: 'Failed when updating account.',
-                code: 500,
-            );
-        }
+        return $user;
     }
 
     public function updatePassword(array $data, User $user): void

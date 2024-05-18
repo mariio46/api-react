@@ -4,91 +4,74 @@ namespace App\Repositories\Repository;
 
 use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use Error;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function baseQuery(): Builder
+    protected $baseQuery;
+
+    public function __construct(protected User $user)
     {
-        return User::query();
+        $this->baseQuery = $user->query();
     }
 
-    public function getAllUsers(int $current_user_id)
+    public function getAllUsers(int $current_user_id): mixed
     {
-        return $this->baseQuery()
+        return $this->baseQuery
             ->where('id', '!=', $current_user_id)
+            ->with(['roles'])
             ->orderBy('id', 'desc')
             ->get();
     }
 
-    public function getAllPaginateUsers(?string $search = null): LengthAwarePaginator
+    public function storeUser(array $data): Model|static
     {
-        return $this->baseQuery()
-            ->where('id', '!=', request()->user()->id)
-            ->when($search != null ?  $search : null, function ($query, $search) {
-                $query->where(function ($query) use ($search) {
-                    $query->whereAny(
-                        ['name', 'username', 'email'],
-                        'REGEXP',
-                        $search
-                    );
-                });
-            })
-            ->select('id', 'name', 'email', 'username', 'email_verified_at', 'created_at')
-            ->latest()
-            ->paginate(10);
-    }
-
-    public function getSingleUser(string $username): mixed
-    {
-        return $this->baseQuery()
-            ->where('username', $username)
-            ->firstOr(
-                callback: fn () => abort(code: 404, message: 'User not found.')
-            );
-    }
-
-    public function storeNewUser(array $data): void
-    {
-        $user = new User([
+        $user = $this->user->create([
             'name' => $name = $data['name'],
             'username' => generateUsername(value: $name),
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
 
-        $user->saveOrFail();
+        $user->assignRole('member');
 
-        if (!$user->wasRecentlyCreated) {
-            throw new Error(
-                message: 'Failed when creating new user.',
-                code: 500,
-            );
-        }
+        return $user;
     }
 
-    public function updateUser(array $data, User $user): mixed
+    public function getSingleUser(string $username): Model|static
     {
-        $user->fill([
+        return $this->fetchByUsername($username)->firstOrFail()->load(['roles']);
+    }
+
+    public function updateUser(array $data, string $username): Model|static
+    {
+        $user = $this->fetchByUsername($username)->firstOrFail()->load(['roles']);
+
+        $user->update([
             'name' => $data['name'],
             'username' => $data['username'],
             'email' => $data['email'],
             'last_updated_account' => now(),
         ]);
 
-        $user->save();
+        return $user;
+    }
 
-        if (!$user->wasChanged(['name', 'username', 'email', 'last_updated_account'])) {
-            throw new Error(
-                message: "Failed when updating user with name: {$user->name}.",
-                code: 500,
-            );
-        }
+    public function deleteUser(string $username): string
+    {
+        $user = $this->fetchByUsername($username)->firstOrFail();
 
-        return $user->username;
+        $temporaryUserName = $user->name;
+
+        $user->delete();
+
+        return $temporaryUserName;
+    }
+
+    protected function fetchByUsername(string $useranme): Builder
+    {
+        return $this->baseQuery->where('username', $useranme);
     }
 }

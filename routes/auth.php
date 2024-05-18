@@ -12,6 +12,8 @@ Route::post('logout', Controllers\Auth\LogoutController::class)->middleware('aut
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('user', Controllers\Auth\AuthenticatedUserController::class);
 
+    Route::get('user-token-check', Controllers\Auth\CheckTokenController::class)->withoutMiddleware(['auth:sanctum']);
+
     Route::post('account', Controllers\Auth\UpdateAccountController::class);
 
     Route::post('security', Controllers\Auth\UpdatePasswordController::class);
