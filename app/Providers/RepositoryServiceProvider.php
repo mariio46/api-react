@@ -38,6 +38,12 @@ class RepositoryServiceProvider extends ServiceProvider
             abstract: Repositories\Interfaces\AssignmentRepositoryInterface::class,
             concrete: Repositories\Repository\AssignmentRepository::class
         );
+
+        // Product
+        $this->app->bind(
+            abstract: Repositories\Interfaces\ProductRepositoryInterface::class,
+            concrete: Repositories\Repository\ProductRepository::class
+        );
     }
 
     public function boot(): void

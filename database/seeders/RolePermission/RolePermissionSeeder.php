@@ -2,7 +2,6 @@
 
 namespace Database\Seeders\RolePermission;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -27,6 +26,9 @@ class RolePermissionSeeder extends Seeder
             // For Menu Users
             'management admin',
             'management member',
+
+            // For Menu Product
+            'management products',
         ]);
 
         $permissions->each(fn ($permission) => Permission::create(['name' => $permission]));
@@ -36,6 +38,8 @@ class RolePermissionSeeder extends Seeder
             'delete account',
 
             'management member',
+
+            'management products',
         ]);
 
         Role::findByName(name: 'member')->givePermissionTo([

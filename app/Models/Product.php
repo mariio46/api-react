@@ -11,10 +11,15 @@ class Product extends Model
 
     protected $guarded = [];
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     protected function casts(): array
     {
         return [
-            'price' => 'decimal:2'
+            'price' => 'decimal:2',
         ];
     }
 }
