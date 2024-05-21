@@ -36,9 +36,7 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function getSingleCategory(string $id): Model|static
     {
-        $category = $this->fetchById(id: $id)->firstOrFail()->load(['products:category_id,id,name,price']);
-
-        return $category;
+        return $this->fetchById(id: $id)->firstOrFail()->load(['products:category_id,id,name,price']);
     }
 
     public function updateCategory(array $data, string $id): Model|static

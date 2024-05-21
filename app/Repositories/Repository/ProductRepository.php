@@ -19,6 +19,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function getAllProducts()
     {
         return $this->baseQuery
+            ->with(['category'])
             ->orderBy('id', 'desc')
             ->get();
     }
@@ -30,14 +31,15 @@ class ProductRepository implements ProductRepositoryInterface
             'slug' => str($name)->lower()->slug() . '-' . mt_rand(11111, 99999),
             'description' => $data['description'],
             'price' => $data['price'],
+            'category_id' => $data['category'],
         ]);
 
-        return $product;
+        return $product->load(['category:id,name,slug']);
     }
 
     public function getSingleProduct(string $id): Model|static
     {
-        return $this->fetchById($id)->firstOrFail();
+        return $this->fetchById($id)->firstOrFail()->load(['category:id,name,slug']);
     }
 
     public function updateProduct(array $data, string $id): Model|static
@@ -49,9 +51,10 @@ class ProductRepository implements ProductRepositoryInterface
             'slug' => $product->name != $name ? str($name)->lower()->slug() . '-' . mt_rand(11111, 99999) : $product->slug,
             'description' => $data['description'],
             'price' => $data['price'],
+            'category_id' => $data['category'],
         ]);
 
-        return $product;
+        return $product->load(['category:id,name,slug']);
     }
 
     public function deleteProduct(string $id): string
