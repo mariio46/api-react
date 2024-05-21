@@ -38,17 +38,11 @@ Route::middleware(['auth:sanctum', 'permission:management products'])->group(fun
     Route::put('products/{product:id}/update', [Controllers\Product\ProductController::class, 'update']);
     Route::delete('products/{product:id}/delete', [Controllers\Product\ProductController::class, 'delete']);
 
-    // Route::get('categories', [Controllers\Product\ProductCategoryController::class, 'index']);
-    // Route::post('categories/store', [Controllers\Product\ProductCategoryController::class, 'store']);
-    // Route::get('categories/{category:id}', [Controllers\Product\ProductCategoryController::class, 'show']);
-    // Route::put('categories/{category:id}/update', [Controllers\Product\ProductCategoryController::class, 'update']);
-    // Route::delete('categories/{category:id}/delete', [Controllers\Product\ProductCategoryController::class, 'delete']);
-
-    // Route::get('types', [Controllers\Product\ProductTypeController::class, 'index']);
-    // Route::post('types/store', [Controllers\Product\ProductTypeController::class, 'store']);
-    // Route::get('types/{type:id}', [Controllers\Product\ProductTypeController::class, 'show']);
-    // Route::put('types/{type:id}/update', [Controllers\Product\ProductTypeController::class, 'update']);
-    // Route::delete('types/{type:id}/delete', [Controllers\Product\ProductTypeController::class, 'delete']);
+    Route::get('categories', [Controllers\Category\CategoryController::class, 'index']);
+    Route::post('categories/store', [Controllers\Category\CategoryController::class, 'store']);
+    Route::get('categories/{category:id}', [Controllers\Category\CategoryController::class, 'show']);
+    Route::put('categories/{category:id}/update', [Controllers\Category\CategoryController::class, 'update']);
+    Route::delete('categories/{category:id}/delete', [Controllers\Category\CategoryController::class, 'delete']);
 });
 
 require __DIR__ . '/auth.php';
