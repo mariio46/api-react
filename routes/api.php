@@ -37,13 +37,17 @@ Route::middleware(['auth:sanctum', 'permission:management products'])->group(fun
     Route::get('products/{product:id}', [Controllers\Product\ProductController::class, 'show']);
     Route::put('products/{product:id}/update', [Controllers\Product\ProductController::class, 'update']);
     Route::delete('products/{product:id}/delete', [Controllers\Product\ProductController::class, 'delete']);
+});
 
+Route::middleware(['auth:sanctum', 'permission:management categories'])->group(function () {
     Route::get('categories', [Controllers\Category\CategoryController::class, 'index']);
     Route::post('categories/store', [Controllers\Category\CategoryController::class, 'store']);
     Route::get('categories/{category:id}', [Controllers\Category\CategoryController::class, 'show']);
     Route::put('categories/{category:id}/update', [Controllers\Category\CategoryController::class, 'update']);
     Route::delete('categories/{category:id}/delete', [Controllers\Category\CategoryController::class, 'delete']);
+});
 
+Route::middleware(['auth:sanctum', 'permission:management types'])->group(function () {
     Route::get('types', [Controllers\Type\TypeController::class, 'index']);
     Route::post('types/store', [Controllers\Type\TypeController::class, 'store']);
     Route::get('types/{type:id}', [Controllers\Type\TypeController::class, 'show']);

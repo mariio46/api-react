@@ -29,6 +29,12 @@ class RolePermissionSeeder extends Seeder
 
             // For Menu Product
             'management products',
+
+            // For Menu Category
+            'management categories',
+
+            // For Menu Type
+            'management types',
         ]);
 
         $permissions->each(fn ($permission) => Permission::create(['name' => $permission]));
@@ -40,6 +46,8 @@ class RolePermissionSeeder extends Seeder
             'management member',
 
             'management products',
+            'management categories',
+            'management types',
         ]);
 
         Role::findByName(name: 'member')->givePermissionTo([
