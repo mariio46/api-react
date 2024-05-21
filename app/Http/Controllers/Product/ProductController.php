@@ -27,7 +27,9 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request): JsonResponse
     {
-        $product = $this->productRepositoryInterface->storeProduct(data: $request->only(['name', 'description', 'price', 'category']));
+        $product = $this->productRepositoryInterface->storeProduct(
+            data: $request->only(['name', 'description', 'price', 'category', 'type'])
+        );
 
         return ApiResponse::created(
             data: ['product' => new ProductBaseResource($product)]
@@ -45,7 +47,10 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, string $id): JsonResponse
     {
-        $product = $this->productRepositoryInterface->updateProduct(data: $request->only(['name', 'description', 'price', 'category']), id: $id);
+        $product = $this->productRepositoryInterface->updateProduct(
+            data: $request->only(['name', 'description', 'price', 'category', 'type']),
+            id: $id
+        );
 
         return ApiResponse::success(
             data: ['product' => new ProductBaseResource($product)]

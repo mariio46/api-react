@@ -25,6 +25,14 @@ class Product extends Model
         );
     }
 
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(
+            related: Type::class,
+            foreignKey: 'type_id',
+        );
+    }
+
     protected function casts(): array
     {
         return [

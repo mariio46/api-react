@@ -31,12 +31,14 @@ class CategoryRepository implements CategoryRepositoryInterface
             'slug' => str($name)->lower()->slug() . '-' . mt_rand(11111, 99999),
         ]);
 
-        return $category;
+        return $category->loadCount(['products']);
     }
 
     public function getSingleCategory(string $id): Model|static
     {
-        return $this->fetchById(id: $id)->firstOrFail()->load(['products:category_id,id,name,price']);
+        return $this->fetchById(id: $id)->firstOrFail()->load([
+            'products' => fn ($product) => $product->with(['type:id,name,slug', 'category:id,name,slug']),
+        ]);
     }
 
     public function updateCategory(array $data, string $id): Model|static
@@ -48,7 +50,9 @@ class CategoryRepository implements CategoryRepositoryInterface
             'slug' => $category->name != $name ? str($name)->lower()->slug() . '-' . mt_rand(11111, 99999) : $category->slug,
         ]);
 
-        return $category->load(['products:category_id,id,name,price']);
+        return $category->load([
+            'products' => fn ($product) => $product->with(['type:id,name,slug', 'category:id,name,slug']),
+        ]);
     }
 
     public function deleteCategory(string $id): string

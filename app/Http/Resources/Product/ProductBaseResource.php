@@ -23,6 +23,11 @@ class ProductBaseResource extends JsonResource
                 'name' => $this->category->name,
                 'slug' => $this->category->slug,
             ],
+            'type' => [
+                'id' => $this->type->id,
+                'name' => $this->type->name,
+                'slug' => $this->type->slug,
+            ],
         ];
     }
 }

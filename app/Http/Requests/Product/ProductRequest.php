@@ -4,6 +4,7 @@ namespace App\Http\Requests\Product;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Type;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,7 +28,10 @@ class ProductRequest extends FormRequest
                 'required', 'numeric', 'min:500', 'max:100000',
             ],
             'category' => [
-                'required', Rule::exists(Category::class, 'id')
+                'required', Rule::exists(Category::class, 'id'),
+            ],
+            'type' => [
+                'required', Rule::exists(Type::class, 'id'),
             ],
         ];
     }

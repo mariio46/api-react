@@ -39,16 +39,22 @@ class RepositoryServiceProvider extends ServiceProvider
             concrete: Repositories\Repository\AssignmentRepository::class
         );
 
-        // Product
-        $this->app->bind(
-            abstract: Repositories\Interfaces\ProductRepositoryInterface::class,
-            concrete: Repositories\Repository\ProductRepository::class
-        );
-
         // Category
         $this->app->bind(
             abstract: Repositories\Interfaces\CategoryRepositoryInterface::class,
             concrete: Repositories\Repository\CategoryRepository::class
+        );
+
+        // Type
+        $this->app->bind(
+            abstract: Repositories\Interfaces\TypeRepositoryInterface::class,
+            concrete: Repositories\Repository\TypeRepository::class
+        );
+
+        // Product
+        $this->app->bind(
+            abstract: Repositories\Interfaces\ProductRepositoryInterface::class,
+            concrete: Repositories\Repository\ProductRepository::class
         );
     }
 

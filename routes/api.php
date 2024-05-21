@@ -43,6 +43,12 @@ Route::middleware(['auth:sanctum', 'permission:management products'])->group(fun
     Route::get('categories/{category:id}', [Controllers\Category\CategoryController::class, 'show']);
     Route::put('categories/{category:id}/update', [Controllers\Category\CategoryController::class, 'update']);
     Route::delete('categories/{category:id}/delete', [Controllers\Category\CategoryController::class, 'delete']);
+
+    Route::get('types', [Controllers\Type\TypeController::class, 'index']);
+    Route::post('types/store', [Controllers\Type\TypeController::class, 'store']);
+    Route::get('types/{type:id}', [Controllers\Type\TypeController::class, 'show']);
+    Route::put('types/{type:id}/update', [Controllers\Type\TypeController::class, 'update']);
+    Route::delete('types/{type:id}/delete', [Controllers\Type\TypeController::class, 'delete']);
 });
 
 require __DIR__ . '/auth.php';

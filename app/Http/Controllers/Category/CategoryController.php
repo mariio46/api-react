@@ -30,7 +30,7 @@ class CategoryController extends Controller
         $category = $this->categoryRepositoryInterface->storeCategory($request->only(['name']));
 
         return ApiResponse::created(
-            data: ['category' => new CategoryShowResource($category)],
+            data: ['category' => new CategoryIndexResource($category)],
         );
     }
 
